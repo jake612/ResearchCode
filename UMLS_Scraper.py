@@ -13,30 +13,36 @@ def pickle_file(name, struct):
 
 if __name__ == "__main__":
     SUIToString = {}
-    SUIAtomics = {}
+    SUI_To_CUI = {}
+    cui_dict = {}
     StringToSUI = umls_trie.trie()
-    with open("UMLS_Subset.txt", "r", encoding="utf8") as file:
+    with open("MRCONSO.rrf", "r", encoding="utf8") as file:
         for line in file:
             attributes = line.split("|")
             if attributes[1] != "ENG":
                 continue
             string = attributes[14].lower()
-            string = re.sub(r"[^a-zA-Z0-9-]+", "", string)
             StringToSUI.insert_string(string, " ", SUI)
 
+            cui = attributes[0]
             SUI = attributes[5]
-            AUI = attributes[7]
+
+            if cui not in cui_dict:
+                cui_dict[cui] = set()
+            
+            cui_dict[cui].add(sui)
+
+            if sui not in SUI_To_CUI:
+                SUI_To_CUI[sui] = set()
+            SUI_To_CUI[sui].add(sui)
+
             if SUI not in SUIToString:
                 SUIToString[SUI] = string
-            if SUI not in SUIAtomics:
-                SUIAtomics[SUI] = [AUI]
-            elif AUI not in SUIAtomics[SUI]:
-                SUIAtomics[SUI].append(AUI)
 
     pickle_file("StringToSUI.pickle", StringToSUI)
     pickle_file("SUIToString.pickle", SUIToString)
-    pickle_file("SUIAtomics.pickle", SUIAtomics)
-
+    pickle_file("SUI_To_CUI.pickle", SUI_To_CUI)
+    pickle_file("cui_dict.pickle", cui_dict)
 
 
 

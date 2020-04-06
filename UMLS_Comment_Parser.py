@@ -2,7 +2,6 @@ import pickle
 import re
 import UMLS_Trie as umls_trie
 import json
-StringToSUI = umls_trie.trie()
 
 def pickle_file(name, struct):
     try:
@@ -10,33 +9,6 @@ def pickle_file(name, struct):
     except Exception as e:
         print("Pickle file {} for couldn't save".format(name))
         print(e)
-
-
-def parse_UMLS(UMLS_file):
-    SUIToString = {}
-    SUIAtomics ={}
-    with open(UMLS_file, "r", encoding="utf8") as file:
-        for line in file:
-            attributes = line.split("|")
-            if attributes[1] != "ENG":
-                continue
-            SUI = attributes[5]
-            AUI = attributes[7]
-            string = attributes[14].lower()
-            string = re.sub(r"[^a-zA-Z0-9-]+", "", string)
-            StringToSUI.insert_string(string, " ", SUI)
-
-
-            if SUI not in SUIToString:
-                SUIToString[SUI] = string
-            if SUI not in SUIAtomics:
-                SUIAtomics[SUI] = [AUI]
-            elif AUI not in SUIAtomics[SUI]:
-                SUIAtomics[SUI].append(AUI)
-
-    pickle_file("StringToSUI", StringToSUI)
-    pickle_file("SUIToString", SUIToString)
-    pickle_file("SUIAtomics", SUIAtomics)
 
 def parse_comments(comment_file):
     comments = []
